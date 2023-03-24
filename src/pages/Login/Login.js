@@ -34,10 +34,10 @@ export default function Login() {
   return (
     <>
       <div
-        style={{ marginTop: "12%" }}
+        style={{ marginTop: "15%" }}
         className="col-12 d-flex justify-content-around"
       >
-        <Form onSubmit={handleSubmit}>
+        <Form className="col-2  " onSubmit={handleSubmit}>
           <Form.Group className=" mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -45,11 +45,7 @@ export default function Login() {
               placeholder="Enter email"
               onChange={(e) => setEmail(e.target.value)}
             />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
@@ -60,7 +56,7 @@ export default function Login() {
           </Form.Group>
           <div className="mx-5">
             <Button className="col-12" variant="primary" type="submit">
-              Submit
+              Login
             </Button>
           </div>
         </Form>

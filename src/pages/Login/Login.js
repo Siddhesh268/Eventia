@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 export default function Login() {
   (function () {
@@ -23,12 +25,19 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  console.log(email);
-  console.log(password);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await signInWithEmailAndPassword(auth, email, password);
+    return response;
+  };
+
   return (
     <>
-      <div className="col-6">
-        <Form>
+      <div
+        style={{ marginTop: "12%" }}
+        className="col-12 d-flex justify-content-around"
+      >
+        <Form onSubmit={handleSubmit}>
           <Form.Group className=" mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -49,9 +58,11 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          <div className="mx-5">
+            <Button className="col-12" variant="primary" type="submit">
+              Submit
+            </Button>
+          </div>
         </Form>
       </div>
     </>

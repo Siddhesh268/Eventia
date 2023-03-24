@@ -1,20 +1,43 @@
 import React, { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { auth } from "../../config/firebase";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import "./Register.css";
 
 export default function FormExample() {
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Username, setuser] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
 
+  const Registersubmit = async (e) => {
+    e.preventDefault();
     setValidated(true);
+    await createUserWithEmailAndPassword(auth, Email, Password)
+      .then((res) => {
+        console.log(res);
+        const euser = auth.currentUser;
+        sendEmailVerification(euser)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -24,15 +47,20 @@ export default function FormExample() {
         className="col-12 d-flex justify-content-around"
       >
         <Form
-          className="col-4"
+          className="formContainerReg"
           noValidate
           validated={validated}
-          onSubmit={handleSubmit}
+          onSubmit={Registersubmit}
         >
           <Row className="mb-3">
             <Form.Group className="col-6" controlId="validationCustom01">
               <Form.Label>First name</Form.Label>
-              <Form.Control required type="text" placeholder="First name" />
+              <Form.Control
+                required
+                type="text"
+                placeholder="First name"
+                onChange={(e) => setFirstName(e.target.value)}
+              />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
                 Please enter valid First Name
@@ -40,7 +68,12 @@ export default function FormExample() {
             </Form.Group>
             <Form.Group className="col-6" controlId="validationCustom02">
               <Form.Label>Last name</Form.Label>
-              <Form.Control required type="text" placeholder="Last name" />
+              <Form.Control
+                required
+                type="text"
+                placeholder="Last name"
+                onChange={(e) => setLastName(e.target.value)}
+              />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
                 Please enter valid Last Name
@@ -58,42 +91,54 @@ export default function FormExample() {
                   placeholder="Username"
                   aria-describedby="inputGroupPrepend"
                   required
+                  onChange={(e) => setuser(e.target.value)}
                 />
                 <Form.Control.Feedback type="invalid">
                   Please choose a username.
-                </Form.Control.Feedback>
-                <Form.Control.Feedback type="invalid">
-                  Please provide a valid Username
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
 
             <Form.Group className="col-6" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" placeholder="Email" required />
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                required
+                onChange={(e) => setEmail(e.target.value)}
+              />
               <Form.Control.Feedback type="invalid">
-                Please provide a valid Email address.
+                Enter valid Email address.
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
           <Row className="mx">
             <Form.Group className="col-6" controlId="validationCustom03">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="text" placeholder="Password" required />
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                required
+                minLength={8}
+                onChange={(e) => setPassword(e.target.value)}
+              />
               <Form.Control.Feedback type="invalid">
-                Please enter the password.
+                Please enter valid password.
               </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="col-6" controlId="validationCustom04">
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
-                type="text"
+                type="password"
                 placeholder="Re-enter password"
                 required
+                minLength={8}
+                pattern={Password}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <Form.Control.Feedback type="invalid">
-                Please enter the password.
+                Password donot match
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
